@@ -554,11 +554,6 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	if ($mode == 'retain')
 	{
 		// Assign more data to the Anonymous user
-		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
-			SET poster_id = ' . ANONYMOUS . '
-			WHERE ' . $db->sql_in_set('poster_id', $user_ids);
-		$db->sql_query($sql);
-
 		$sql = 'UPDATE ' . USERS_TABLE . '
 			SET user_posts = user_posts + ' . $added_guest_posts . '
 			WHERE user_id = ' . ANONYMOUS;
@@ -575,6 +570,11 @@ function user_delete($mode, $user_ids, $retain_username = true)
 		// delete_posts can handle any number of IDs in its second argument
 		delete_posts('poster_id', $user_ids);
 	}
+
+	$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+		SET poster_id = ' . ANONYMOUS . '
+		WHERE ' . $db->sql_in_set('poster_id', $user_ids);
+	$db->sql_query($sql);
 
 	$table_ary = array(USERS_TABLE, USER_GROUP_TABLE, TOPICS_WATCH_TABLE, FORUMS_WATCH_TABLE, ACL_USERS_TABLE, TOPICS_TRACK_TABLE, TOPICS_POSTED_TABLE, FORUMS_TRACK_TABLE, PROFILE_FIELDS_DATA_TABLE, MODERATOR_CACHE_TABLE, DRAFTS_TABLE, BOOKMARKS_TABLE, SESSIONS_KEYS_TABLE, PRIVMSGS_FOLDER_TABLE, PRIVMSGS_RULES_TABLE);
 
